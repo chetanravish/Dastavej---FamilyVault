@@ -117,7 +117,7 @@ export async function login(req, res) {
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: true,
-    sameSite: "strict",
+    sameSite: "None",        //Strict -> None because of render and vercel different domains
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
@@ -216,7 +216,7 @@ export async function refreshToken(req, res) {
   res.cookie("refreshToken", newrefreshToken, {
     httpOnly: true,
     secure: true,
-    sameSite: "strict",
+    sameSite: "None",    //Strict -> None because of render and vercel different domains
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 

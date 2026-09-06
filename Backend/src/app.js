@@ -8,6 +8,7 @@ import famRouter from './routes/family.routes.js';
 const app = express()
 app.use(cors({origin:[
     "http://localhost:5173",
+    "https://dastavej-family-vault.vercel.app/"
 ],
 credentials:true,
 }))
