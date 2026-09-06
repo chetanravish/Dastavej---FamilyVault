@@ -34,7 +34,7 @@ export default function Register({ onLogin, onVerify }) {
   return (
     <div className="min-h-screen w-full bg-[#0B0F19] text-gray-100 flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        {/* Logo */}
+       
         <Link to={"/"} className="flex items-center justify-center gap-2 mb-8">
           <div className="w-8 h-8 rounded-lg bg-amber-400/10 border border-amber-400/30 flex items-center justify-center">
             <Lock className="w-4 h-4 text-blue-500" strokeWidth={2.5} />

@@ -259,7 +259,13 @@ export async function logout(req, res) {
   session.revoked = true;
   await session.save();
 
-  res.clearCookie("refreshToken");
+  res.clearCookie("refreshToken",
+     {
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+  }
+  );
 
   res.status(200).json({
     message: "Logged Out Successfully",

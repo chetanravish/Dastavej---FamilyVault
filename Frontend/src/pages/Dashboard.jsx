@@ -60,12 +60,10 @@ export default function Dashboard() {
   const handleLogout = async () => {
     try {
       await logOut();
+     } finally{
       setAccessToken(null);
       setUser(null);
-      navigate("/", { replace: true });
-    } catch (err) {
-      alert(err.response?.data?.message || "Logout failed");
-    }
+      navigate("/", { replace: true });}
   };
 
   return (
