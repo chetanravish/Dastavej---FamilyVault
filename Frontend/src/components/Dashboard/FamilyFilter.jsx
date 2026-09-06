@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Users, Plus } from "lucide-react";
+import { Users, Plus, X } from "lucide-react";
 
 const colors = [
   "bg-pink-500",
@@ -106,48 +106,117 @@ export default function FamilyFilter({
           </button>
 
           {showMore && (
-            <div className="absolute top-16 sm:top-20 md:top-24 right-0 w-64 sm:w-72 bg-[#131826] border border-white/10 rounded-2xl p-2.5 sm:p-3 grid grid-cols-2 gap-2.5 sm:gap-3 shadow-2xl z-50">
-
-              {hiddenMembers.map((member, index) => (
-                <button
-                  key={member._id}
-                  onClick={() => {
-                    onSelect(member);
-                    setShowMore(false);
-                  }}
-                  className="flex items-center gap-2 p-2 rounded-xl hover:bg-white/5"
+            <>
+              {/* Mobile: bottom sheet (avoids clipping from the scrollable row's overflow) */}
+              <div
+                className="sm:hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-end"
+                onClick={() => setShowMore(false)}
+              >
+                <div
+                  onClick={(e) => e.stopPropagation()}
+                  className="w-full bg-[#131826] border-t border-white/10 rounded-t-3xl p-4 max-h-[70vh] overflow-y-auto"
+                  style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
                 >
-                  <div
-                    className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-white text-sm sm:text-base font-bold shrink-0 ${
-                      colors[(index + 4) % colors.length]
-                    }`}
+                  <div className="w-10 h-1 rounded-full bg-white/15 mx-auto mb-4" />
+
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-white font-semibold">More Members</h3>
+                    <button
+                      onClick={() => setShowMore(false)}
+                      className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/5"
+                    >
+                      <X className="w-4 h-4 text-gray-400" />
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2.5">
+                    {hiddenMembers.map((member, index) => (
+                      <button
+                        key={member._id}
+                        onClick={() => {
+                          onSelect(member);
+                          setShowMore(false);
+                        }}
+                        className="flex items-center gap-2 p-2 rounded-xl hover:bg-white/5"
+                      >
+                        <div
+                          className={`w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 ${
+                            colors[(index + 4) % colors.length]
+                          }`}
+                        >
+                          {member.name.charAt(0)}
+                        </div>
+
+                        <div className="text-left min-w-0">
+                          <p className="text-white text-xs truncate">
+                            {member.name}
+                          </p>
+                          <p className="text-gray-400 text-[10px]">
+                            {member.relation}
+                          </p>
+                        </div>
+                      </button>
+                    ))}
+
+                    {members.length < 10 && (
+                      <button
+                        onClick={() => {
+                          setShowMore(false);
+                          onAddClick();
+                        }}
+                        className="col-span-2 mt-1 p-2.5 rounded-xl border border-dashed border-white/10 hover:border-blue-500 text-blue-400 text-sm font-medium"
+                      >
+                        + Add Member
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Desktop/tablet: dropdown */}
+              <div className="hidden sm:grid absolute top-20 md:top-24 right-0 w-64 sm:w-72 bg-[#131826] border border-white/10 rounded-2xl p-2.5 sm:p-3 grid-cols-2 gap-2.5 sm:gap-3 shadow-2xl z-50">
+
+                {hiddenMembers.map((member, index) => (
+                  <button
+                    key={member._id}
+                    onClick={() => {
+                      onSelect(member);
+                      setShowMore(false);
+                    }}
+                    className="flex items-center gap-2 p-2 rounded-xl hover:bg-white/5"
                   >
-                    {member.name.charAt(0)}
-                  </div>
+                    <div
+                      className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-white text-sm sm:text-base font-bold shrink-0 ${
+                        colors[(index + 4) % colors.length]
+                      }`}
+                    >
+                      {member.name.charAt(0)}
+                    </div>
 
-                  <div className="text-left min-w-0">
-                    <p className="text-white text-xs sm:text-sm truncate">
-                      {member.name}
-                    </p>
-                    <p className="text-gray-400 text-[10px] sm:text-xs">
-                      {member.relation}
-                    </p>
-                  </div>
-                </button>
-              ))}
+                    <div className="text-left min-w-0">
+                      <p className="text-white text-xs sm:text-sm truncate">
+                        {member.name}
+                      </p>
+                      <p className="text-gray-400 text-[10px] sm:text-xs">
+                        {member.relation}
+                      </p>
+                    </div>
+                  </button>
+                ))}
 
-              {members.length < 10 && (
-                <button
-                  onClick={() => {
-                    setShowMore(false);
-                    onAddClick();
-                  }}
-                  className="col-span-2 mt-1 p-2 rounded-xl border border-dashed border-white/10 hover:border-blue-500 text-blue-400 text-xs sm:text-sm font-medium"
-                >
-                  + Add Member
-                </button>
-              )}
-            </div>
+                {members.length < 10 && (
+                  <button
+                    onClick={() => {
+                      setShowMore(false);
+                      onAddClick();
+                    }}
+                    className="col-span-2 mt-1 p-2 rounded-xl border border-dashed border-white/10 hover:border-blue-500 text-blue-400 text-xs sm:text-sm font-medium"
+                  >
+                    + Add Member
+                  </button>
+                )}
+              </div>
+            </>
           )}
         </div>
       ) : (

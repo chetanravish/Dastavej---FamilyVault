@@ -60,46 +60,57 @@ export default function UploadDocumentModal({ isOpen, onClose, onSuccess, member
     };
 
     return (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="w-full max-w-lg rounded-3xl bg-[#131826] border border-white/10 overflow-hidden">
+        <div
+            className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4"
+            onClick={handleClose}
+        >
+            <div
+                onClick={(e) => e.stopPropagation()}
+                className="w-full sm:max-w-lg h-[92vh] sm:h-auto sm:max-h-[90vh] rounded-t-3xl sm:rounded-3xl bg-[#131826] border border-white/10 overflow-hidden flex flex-col"
+            >
+                {/* Mobile drag handle */}
+                <div
+                    className="sm:hidden w-10 h-1 rounded-full bg-white/15 mx-auto mt-3 shrink-0"
+                    style={{ marginTop: "calc(0.75rem + env(safe-area-inset-top))" }}
+                />
 
                 {/* Header */}
-                <div className="flex items-center justify-between px-6 py-5 border-b border-white/5">
-                    <h2 className="text-xl font-semibold text-white">
+                <div className="flex items-center justify-between px-5 sm:px-6 py-4 sm:py-5 border-b border-white/5 shrink-0">
+                    <h2 className="text-lg sm:text-xl font-semibold text-white">
                         Upload Document
                     </h2>
 
                     <button
                         onClick={handleClose}
-                        className="w-10 h-10 rounded-xl hover:bg-white/5 flex items-center justify-center"
+                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl hover:bg-white/5 flex items-center justify-center shrink-0"
                     >
                         <X className="w-5 h-5 text-gray-300" />
                     </button>
                 </div>
 
-                {/* Body */}
-                <div className="p-6 space-y-5">
+                {/* Body - scrollable */}
+                <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4 sm:space-y-5">
 
                     {/* File Picker */}
                     <label className="block">
-                        <div className="border-2 border-dashed border-white/10 rounded-2xl p-8 text-center hover:border-blue-500/40 transition cursor-pointer">
+                        <div className="border-2 border-dashed border-white/10 rounded-2xl p-6 sm:p-8 text-center hover:border-blue-500/40 transition cursor-pointer">
                             {file ? (
-                                <div className="space-y-3">
+                                <div className="space-y-2.5 sm:space-y-3">
                                     {file.type.includes("pdf") ? (
-                                        <FileText className="w-12 h-12 text-blue-400 mx-auto" />
+                                        <FileText className="w-10 h-10 sm:w-12 sm:h-12 text-blue-400 mx-auto" />
                                     ) : (
-                                        <ImageIcon className="w-12 h-12 text-emerald-400 mx-auto" />
+                                        <ImageIcon className="w-10 h-10 sm:w-12 sm:h-12 text-emerald-400 mx-auto" />
                                     )}
 
-                                    <p className="text-white font-medium">{file.name}</p>
+                                    <p className="text-white text-sm sm:text-base font-medium truncate px-2">{file.name}</p>
                                     <p className="text-xs text-gray-400">
                                         {(file.size / 1024 / 1024).toFixed(2)} MB
                                     </p>
                                 </div>
                             ) : (
-                                <div className="space-y-3">
-                                    <Upload className="w-12 h-12 text-gray-400 mx-auto" />
-                                    <p className="text-white font-medium">
+                                <div className="space-y-2.5 sm:space-y-3">
+                                    <Upload className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400 mx-auto" />
+                                    <p className="text-white text-sm sm:text-base font-medium">
                                         Click to choose a file
                                     </p>
                                     <p className="text-xs text-gray-500">
@@ -127,7 +138,7 @@ export default function UploadDocumentModal({ isOpen, onClose, onSuccess, member
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             placeholder="Aadhar Card"
-                            className="w-full rounded-xl bg-[#0B0F19] border border-white/10 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+                            className="w-full rounded-xl bg-[#0B0F19] border border-white/10 px-4 py-3 text-white text-base focus:outline-none focus:ring-2 focus:ring-blue-500/40"
                         />
                     </div>
 
@@ -140,7 +151,7 @@ export default function UploadDocumentModal({ isOpen, onClose, onSuccess, member
                         <select
                             value={category}
                             onChange={(e) => setCategory(e.target.value)}
-                            className="w-full rounded-xl bg-[#0B0F19] border border-white/10 px-4 py-3 text-white focus:outline-none"
+                            className="w-full rounded-xl bg-[#0B0F19] border border-white/10 px-4 py-3 text-white text-base focus:outline-none"
                         >
                             {categories.map((item) => (
                                 <option key={item}>{item}</option>
@@ -151,7 +162,7 @@ export default function UploadDocumentModal({ isOpen, onClose, onSuccess, member
                     <select
                         value={memberId}
                         onChange={(e) => setMemberId(e.target.value)}
-                        className="w-full bg-[#0B0F19] border border-white/10 rounded-xl px-4 py-3 text-white"
+                        className="w-full bg-[#0B0F19] border border-white/10 rounded-xl px-4 py-3 text-white text-base"
                         required
                     >
                         <option value="">Select Family Member</option>
@@ -165,11 +176,14 @@ export default function UploadDocumentModal({ isOpen, onClose, onSuccess, member
 
                 </div>
 
-                {/* Footer */}
-                <div className="px-6 py-5 border-t border-white/5 flex justify-end gap-3">
+                {/* Footer - always visible, never overlapped */}
+                <div
+                    className="px-5 sm:px-6 py-4 border-t border-white/5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2.5 sm:gap-3 shrink-0"
+                    style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
+                >
                     <button
                         onClick={handleClose}
-                        className="px-5 py-2.5 rounded-xl border border-white/10 text-gray-300 hover:bg-white/5"
+                        className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-white/10 text-gray-300 hover:bg-white/5 active:scale-[0.98] transition"
                     >
                         Cancel
                     </button>
@@ -177,7 +191,7 @@ export default function UploadDocumentModal({ isOpen, onClose, onSuccess, member
                     <button
                         onClick={handleUpload}
                         disabled={!file || !name || !memberId}
-                        className="px-5 py-2.5 rounded-xl bg-blue-500 hover:bg-blue-600 disabled:opacity-50 text-black font-medium flex items-center gap-2"
+                        className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-blue-500 hover:bg-blue-600 disabled:opacity-50 text-black font-medium flex items-center justify-center gap-2 active:scale-[0.98] transition"
                     >
                         <Upload className="w-4 h-4" />
                         Upload
