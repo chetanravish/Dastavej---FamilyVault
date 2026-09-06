@@ -30,26 +30,28 @@ export default function StatsCards({
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+    <div className="grid grid-cols-3 gap-2.5 sm:gap-4 md:gap-5">
       {cards.map((card) => {
         const Icon = card.icon;
 
         return (
           <div
             key={card.title}
-            className="bg-[#131826] border border-white/5 rounded-2xl p-5 hover:border-white/10 transition"
+            className="bg-[#131826] border border-white/5 rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 hover:border-white/10 transition"
           >
             <div
-              className={`w-12 h-12 rounded-xl ${card.bg} flex items-center justify-center`}
+              className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg md:rounded-xl ${card.bg} flex items-center justify-center`}
             >
-              <Icon className={`w-6 h-6 ${card.color}`} />
+              <Icon className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 ${card.color}`} />
             </div>
 
-            <h3 className="mt-4 text-3xl font-bold text-white">
+            <h3 className="mt-2 sm:mt-3 md:mt-4 text-lg sm:text-2xl md:text-3xl font-bold text-white">
               {card.value}
             </h3>
 
-            <p className="mt-1 text-sm text-gray-400">{card.title}</p>
+            <p className="mt-0.5 sm:mt-1 text-[11px] sm:text-xs md:text-sm text-gray-400 truncate">
+              {card.title}
+            </p>
           </div>
         );
       })}

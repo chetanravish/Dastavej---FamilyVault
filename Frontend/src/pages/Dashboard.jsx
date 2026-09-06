@@ -26,6 +26,8 @@ export default function Dashboard() {
   const [members, setMembers] = useState([]);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
+  const [mobileMenu, setMobileMenu] = useState(false);
+  
 
   const filteredDocuments = selectedMember
     ? documents.filter((doc) => doc.member?._id === selectedMember._id)
@@ -66,128 +68,127 @@ export default function Dashboard() {
       navigate("/", { replace: true });}
   };
 
-  return (
-    <div className="flex min-h-screen bg-[#0B0F19] text-white">
-      <Sidebar
+ return (
+  <div className="flex min-h-screen bg-[#0B0F19] text-white">
+    {/* Sidebar */}
+    <Sidebar
+      user={user}
+      activeTab={activeTab}
+      setActiveTab={setActiveTab}
+      onLogout={handleLogout}
+      isOpen={mobileMenu}
+      onClose={() => setMobileMenu(false)}
+    />
+
+    {/* Main */}
+    <main className="flex-1 md:ml-64 p-4 md:p-8 overflow-x-hidden">
+      <Topbar
+        search={search}
+        setSearch={setSearch}
         user={user}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        onLogout={handleLogout}
+        onUpload={() => setIsUploadOpen(true)}
+        onMenu={() => setMobileMenu(true)}
       />
 
-      <main className="flex-1 p-8">
-        <Topbar
-          search={search}
-          setSearch={setSearch}
-          user={user}
-          onUpload={() => setIsUploadOpen(true)}
-        />
+      {/* KEEP EVERYTHING BELOW EXACTLY SAME */}
+      {activeTab === "documents" && (
+        <div className="space-y-5 md:space-y-6">
+          <WelcomeCard user={user} onUpload={() => setIsUploadOpen(true)} />
 
-        {activeTab === "documents" && (
-          <div className="space-y-6">
-            <WelcomeCard user={user}
-              onUpload={() => setIsUploadOpen(true)}
-            />
-            <FamilyFilter
-              members={members}
-              documents={documents}
-              selectedMember={selectedMember}
-              onSelect={setSelectedMember}
-              onAddClick={() => setIsAddOpen(true)}
-            />
-            <StatsCards
-              totalDocs={filteredDocuments.length}
-              familyMembers={members.length}
-              secureNotes={0}
-            />
-            <DocumentModel
-              document={selectedDocument}
-              onClose={() => setSelectedDocument(null)}
-            />
-            <UploadDocModel
-              isOpen={isUploadOpen}
-              onClose={() => setIsUploadOpen(false)}
-              members={members}
-              onSuccess={(newDoc) => {
-                setDocuments((prev) => [newDoc, ...prev]);
-              }}
-            />
-            {selectedMember && (
-              <div className="flex items-center justify-between bg-[#131826] border border-blue-500/20 rounded-xl px-4 py-3">
-                <p className="text-blue-300">
-                  Viewing documents of{" "}
-                  <span className="font-semibold">
-                    {selectedMember.name}
-                  </span>{" "}
-                  ({selectedMember.relation})
-                </p>
+          <FamilyFilter
+            members={members}
+            documents={documents}
+            selectedMember={selectedMember}
+            onSelect={setSelectedMember}
+            onAddClick={() => setIsAddOpen(true)}
+          />
 
-                <button
-                  onClick={() => setSelectedMember(null)}
-                  className="text-sm text-gray-300 hover:text-white"
-                >
-                  Clear Filter
-                </button>
-              </div>
-            )}
-            <RecentDocuments
-              documents={filteredDocuments}
-              search={search}
-              onView={setSelectedDocument}
-            />
-            <DocumentViewer
-              document={selectedDocument}
-              onClose={() => setSelectedDocument(null)}
-              onDelete={(id) => {
-                setDocuments((prev) => prev.filter((doc) => doc._id !== id));
-                setSelectedDocument(null);
-              }}
-              onUpdate={(updated) => {
-                setDocuments((prev) =>
-                  prev.map((d) => (d._id === updated._id ? updated : d))
-                );
-                setSelectedDocument(updated);
-              }}
-            />
-          </div>
-        )}
+          <StatsCards
+            totalDocs={filteredDocuments.length}
+            familyMembers={members.length}
+            secureNotes={0}
+          />
 
-        {activeTab === "notes" && (
-          <h1 className="text-3xl font-bold">Secure Notes</h1>
-        )}
+          <UploadDocModel
+            isOpen={isUploadOpen}
+            onClose={() => setIsUploadOpen(false)}
+            members={members}
+            onSuccess={(newDoc) =>
+              setDocuments((prev) => [newDoc, ...prev])
+            }
+          />
 
-        {activeTab === "tools" && (
-          <h1 className="text-3xl font-bold">PDF Tools</h1>
-        )}
+          {selectedMember && (
+            <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between bg-[#131826] border border-blue-500/20 rounded-xl px-4 py-3">
+              <p className="text-blue-300 text-sm">
+                Viewing <b>{selectedMember.name}</b>
+              </p>
 
-        {activeTab === "settings" && (
-          <h1 className="text-3xl font-bold">Working On It </h1>
-        )}
+              <button
+                onClick={() => setSelectedMember(null)}
+                className="text-sm text-gray-300"
+              >
+                Clear Filter
+              </button>
+            </div>
+          )}
 
-        {activeTab === "family" && (
-          <>
-            <Family
-              members={members}
-              selectedMember={selectedMember}
-              onSelect={setSelectedMember}
-              onAddClick={() => setIsAddOpen(true)}
-              onDelete={(id) => {
-                setMembers((prev) => prev.filter((m) => m._id !== id));
-                if (selectedMember?._id === id) setSelectedMember(null);
-              }}
-            />
-          </>
-        )}
-        <AddMemberModel
-          isOpen={isAddOpen}
-          onClose={() => setIsAddOpen(false)}
-          memberCount={members.length}
-          onSuccess={(newMember) => {
-            setMembers((prev) => [...prev, newMember]);
+          <RecentDocuments
+            documents={filteredDocuments}
+            search={search}
+            onView={setSelectedDocument}
+          />
+
+          <DocumentViewer
+            document={selectedDocument}
+            onClose={() => setSelectedDocument(null)}
+            onDelete={(id) => {
+              setDocuments((prev) =>
+                prev.filter((d) => d._id !== id)
+              );
+              setSelectedDocument(null);
+            }}
+            onUpdate={(updated) => {
+              setDocuments((prev) =>
+                prev.map((d) =>
+                  d._id === updated._id ? updated : d
+                )
+              );
+              setSelectedDocument(updated);
+            }}
+          />
+        </div>
+      )}
+
+      {activeTab === "family" && (
+        <Family
+          members={members}
+          selectedMember={selectedMember}
+          onSelect={setSelectedMember}
+          onAddClick={() => setIsAddOpen(true)}
+          onDelete={(id) => {
+            setMembers((prev) =>
+              prev.filter((m) => m._id !== id)
+            );
+            if (selectedMember?._id === id)
+              setSelectedMember(null);
           }}
         />
+      )}
 
-      </main>
-    </div>
-  );
+      {activeTab === "notes" && <h1>Secure Notes</h1>}
+      {activeTab === "tools" && <h1>PDF Tools</h1>}
+      {activeTab === "settings" && <h1>Working On It</h1>}
+
+      <AddMemberModel
+        isOpen={isAddOpen}
+        onClose={() => setIsAddOpen(false)}
+        memberCount={members.length}
+        onSuccess={(m) =>
+          setMembers((prev) => [...prev, m])
+        }
+      />
+    </main>
+  </div>
+);
 }

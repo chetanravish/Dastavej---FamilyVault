@@ -1,55 +1,62 @@
-import { Search, Bell, Upload } from "lucide-react";
+import {
+  Search,
+  Bell,
+  Upload,
+  Menu,
+} from "lucide-react";
 
 export default function Topbar({
   search,
   setSearch,
   user,
   onUpload,
+  onMenu,
 }) {
   return (
-    <header className="flex items-center justify-between gap-4 mb-8">
+    <header className="flex items-center gap-2 sm:gap-3 mb-6">
+      {/* Hamburger */}
+      <button
+        onClick={onMenu}
+        className="md:hidden w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#131826] border border-white/10 flex items-center justify-center shrink-0"
+      >
+        <Menu className="w-5 h-5" />
+      </button>
+
       {/* Search */}
-      <div className="relative flex-1 max-w-xl">
-        <Search className="w-5 h-5 text-gray-500 absolute left-4 top-1/2 -translate-y-1/2" />
+      <div className="relative flex-1 min-w-0">
+        <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-500" />
 
         <input
-          type="text"
-          placeholder="Search your documents..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full bg-[#131826] border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+          placeholder="Search..."
+          className="w-full bg-[#131826] border border-white/10 rounded-xl pl-9 sm:pl-11 pr-3 sm:pr-4 py-2.5 sm:py-3 text-sm sm:text-base"
         />
       </div>
 
-      {/* Right Side */}
-      <div className="flex items-center gap-3">
-        {/* Upload Button */}
-        <button
-          onClick={onUpload}
-          className="hidden md:flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-5 py-3 rounded-2xl font-medium text-white transition"
-        >
-          <Upload className="w-4 h-4" />
-          Upload Document
-        </button>
+      {/* Upload desktop */}
+      <button
+        onClick={onUpload}
+        className="hidden md:flex items-center gap-2 bg-blue-600 px-5 py-3 rounded-xl shrink-0"
+      >
+        <Upload className="w-4 h-4" />
+        Upload
+      </button>
 
-        {/* Notification */}
-        <button className="w-11 h-11 rounded-xl bg-[#131826] border border-white/10 flex items-center justify-center hover:bg-white/5 transition">
-          <Bell className="w-5 h-5 text-gray-300" />
-        </button>
+      {/* Upload mobile (icon only) */}
+      <button
+        onClick={onUpload}
+        className="md:hidden w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-blue-600 flex items-center justify-center shrink-0"
+      >
+        <Upload className="w-4 h-4 sm:w-5 sm:h-5" />
+      </button>
 
-        {/* Profile */}
-        <div className="flex items-center gap-3 bg-[#131826] border border-white/10 rounded-2xl px-3 py-2">
-          <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-semibold text-white">
-            {user?.username?.charAt(0).toUpperCase() || "U"}
-          </div>
+      <button className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#131826] border border-white/10 flex items-center justify-center shrink-0">
+        <Bell className="w-4 h-4 sm:w-5 sm:h-5" />
+      </button>
 
-          <div className="hidden sm:block leading-tight">
-            <p className="text-sm font-medium text-white">
-              {user?.username || "User"}
-            </p>
-            <p className="text-xs text-green-400">Online</p>
-          </div>
-        </div>
+      <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-blue-600 flex items-center justify-center font-bold text-sm sm:text-base shrink-0">
+        {user?.username?.charAt(0).toUpperCase() || "U"}
       </div>
     </header>
   );
