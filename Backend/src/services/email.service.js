@@ -9,6 +9,8 @@ const transporter = nodemailer.createTransport({
     user: config.BREVO_LOGIN,
     pass: config.BREVO_SMTP_KEY,
   },
+    family: 4, 
+  connectionTimeout: 10000,
 });
 
 
