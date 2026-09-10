@@ -2,37 +2,30 @@ import nodemailer from "nodemailer";
 import config from "../config/config.js";
 
 const transporter = nodemailer.createTransport({
-    service:'gmail',
-    auth:{
-        type:'OAuth2',
-        user: config.GOOGLE_USER,
-        clientId:config.GOOGLE_CLIENT_ID,
-        clientSecret:config.GOOGLE_CLIENT_SECRET,
-        refreshToken:config.GOOGLE_REFRESH_TOKEN,
-    }
-})
+  host: config.BREVO_HOST,
+  port: Number(config.BREVO_PORT),
+  secure: false, 
+  auth: {
+    user: config.BREVO_LOGIN,
+    pass: config.BREVO_SMTP_KEY,
+  },
+});
 
-transporter.verify((error,success)=>{
-    if(error){
-        console.log('Error connecting to email server',error)
-    }   else{
-        console.log('Email server is ready to send message')
-    }
-})
 
-export const sendEmail = async(to,subject,text,html) =>{
-    try{
-        const info = await transporter.sendMail({
-            from:`"Chetan Ravish" <${config.GOOGLE_USER}>`,
-            to,
-            subject,
-            text,
-            html
-        });
-        console.log(`Message sent: %s`,info.messageId)
-        console.log(`preview url: %s`, nodemailer.getTestMessageUrl(info))
-    }catch(error){
-        console.error('Error sending email:',error);
-        throw error
-    }
-}
+transporter.verify((error) => {
+  if (error) {
+    console.error("Brevo SMTP connection failed:", error.message);
+  } else {
+    console.log("Brevo SMTP is ready to send emails");
+  }
+});
+
+export const sendEmail = async (to, subject, text, html) => {
+  return transporter.sendMail({
+    from: `"${config.BREVO_SENDER_NAME}" <${config.BREVO_SENDER_EMAIL}>`,
+    to,
+    subject,
+    text,
+    html,
+  });
+};
