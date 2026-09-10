@@ -8,17 +8,8 @@ if(!process.env.MONGO_URI)  {
 if(!process.env.JWT_SECRET){
     throw new Error("JWT_SECRET is not defined")
 }
-if(!process.env.BREVO_HOST){
-    throw new Error("BREVO_HOST is not defined")
-}
-if(!process.env.BREVO_PORT){
-    throw new Error("BREVO_PORT is not defined")
-}
-if(!process.env.BREVO_LOGIN){
-    throw new Error("BREVO_LOGIN is not defined")
-}
-if(!process.env.BREVO_SMTP_KEY){
-    throw new Error("BREVO_SMTP_KEY is not defined")
+if(!process.env.BREVO_API_KEY){
+    throw new Error("BREVO_API_KEY is not defined")
 }
 if(!process.env.BREVO_SENDER_EMAIL){
     throw new Error("BREVO_SENDER_EMAIL is not defined")
@@ -39,10 +30,7 @@ if(!process.env.AWS_REGION){
 const config ={
     MONGO_URI:process.env.MONGO_URI,
     JWT_SECRET:process.env.JWT_SECRET,
-    BREVO_HOST:process.env.BREVO_HOST,
-    BREVO_PORT:process.env.BREVO_PORT,
-    BREVO_LOGIN:process.env.BREVO_LOGIN,
-    BREVO_SMTP_KEY:process.env.BREVO_SMTP_KEY,
+    BREVO_API_KEY:process.env.BREVO_API_KEY,
     BREVO_SENDER_EMAIL:process.env.BREVO_SENDER_EMAIL,
     BREVO_SENDER_NAME:process.env.BREVO_SENDER_NAME,
     AWS_REGION:process.env.AWS_REGION,

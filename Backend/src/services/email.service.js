@@ -1,33 +1,34 @@
-import nodemailer from "nodemailer";
+import axios from "axios";
 import config from "../config/config.js";
 
-const transporter = nodemailer.createTransport({
-  host: config.BREVO_HOST,
-  port: Number(config.BREVO_PORT),
-  secure: false, 
-  auth: {
-    user: config.BREVO_LOGIN,
-    pass: config.BREVO_SMTP_KEY,
+const brevoClient = axios.create({
+  baseURL: "https://api.brevo.com/v3",
+  headers: {
+    "api-key": config.BREVO_API_KEY, // new env var — see note below
+    "Content-Type": "application/json",
+    Accept: "application/json",
   },
-    family: 4, 
-  connectionTimeout: 10000,
-});
-
-
-transporter.verify((error) => {
-  if (error) {
-    console.error("Brevo SMTP connection failed:", error.message);
-  } else {
-    console.log("Brevo SMTP is ready to send emails");
-  }
 });
 
 export const sendEmail = async (to, subject, text, html) => {
-  return transporter.sendMail({
-    from: `"${config.BREVO_SENDER_NAME}" <${config.BREVO_SENDER_EMAIL}>`,
-    to,
-    subject,
-    text,
-    html,
-  });
+  try {
+    const response = await brevoClient.post("/smtp/email", {
+      sender: {
+        email: config.BREVO_SENDER_EMAIL,
+        name: config.BREVO_SENDER_NAME,
+      },
+      to: [{ email: to }],
+      subject,
+      textContent: text,
+      htmlContent: html,
+    });
+    console.log("Email sent via Brevo API:", response.data.messageId);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Brevo API email failed:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
 };
