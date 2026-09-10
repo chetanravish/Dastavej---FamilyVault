@@ -45,7 +45,7 @@ export async function register(req, res) {
     otpHash,
   });
 
-  await sendEmail(email, "OTP Verification", `Your OTP Code Is ${otp}`, html);
+  await sendEmail(email, "OTP Verification", `Your OTP Code Is ${otp}`, html).catch((err) => console.error("Failed to send OTP email:", err));
 
   res.status(201).json({
     message: "User Created Successfully",
@@ -370,7 +370,7 @@ export async function resendOtp(req, res) {
 
   const html = getOtpHtml(otp, email, user.username);
 
-  await sendEmail(email, "New OTP Verification", `Your OTP is ${otp}`, html);
+  await sendEmail(email, "New OTP Verification", `Your OTP is ${otp}`, html).catch((err) => console.error("Failed to send OTP email:", err));
   res.status(200).json({
     message: "OTP sent successfully",
   });
@@ -409,7 +409,7 @@ export async function forgotPassword(req, res) {
     "OTP To Reset Your Password",
     `Your OTP is ${otp}`,
     html,
-  );
+  ).catch((err) => console.error("Failed to send OTP email:", err));
   return res.status(200).json({
     message: "OTP sent successfully",
   });

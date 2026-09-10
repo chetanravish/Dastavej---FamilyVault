@@ -19,6 +19,12 @@ app.use(cookieParser())
 app.use("/api/auth",authRouter)
 app.use("/api/documents", documentRouter)
 app.use("/api/family",famRouter)
+app.use((err, req, res, next) => {
+  console.error(err);
+  if (!res.headersSent) {
+    res.status(500).json({ message: "Something went wrong" });
+  }
+});
 
 
 

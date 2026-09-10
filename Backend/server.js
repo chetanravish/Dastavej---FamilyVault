@@ -6,3 +6,7 @@ connectToDb();
 app.listen(3000,()=>{
     console.log(`Server is running`)
 })
+
+process.on("unhandledRejection", (reason) => {
+  console.error("Unhandled Rejection:", reason);
+});
